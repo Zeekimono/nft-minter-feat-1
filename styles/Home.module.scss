@@ -1,0 +1,25 @@
+.Container {
+  width: 80%;
+  margin: auto;
+
+  &Control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 90vh;
+    gap: 3em;
+
+    &Content {
+      flex: 1;
+    }
+
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+      margin-bottom: 2em;
+    }
+  }
+  
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
+}
