@@ -11,7 +11,7 @@ export default function FileUploader({
   const [imageUrl, setImageUrl] = useState("");
 
   const onDrop = useCallback(async (acceptedFiles) => {
-    console.log(acceptedFiles[0]);
+    // console.log(acceptedFiles[0]);
     if (isUploading) return;
     if (acceptedFiles.length > 1 || !acceptedFiles.length) return;
 

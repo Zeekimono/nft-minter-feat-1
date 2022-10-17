@@ -10,7 +10,7 @@ import { publicProvider } from "wagmi/providers/public";
 import "../styles/globals.scss";
 
 const { chains, provider } = configureChains(
-  [chain.polygonMumbai],
+  [chain.polygon],
   [alchemyProvider({ apiKey: process.env.ALCHEMY_ID }), publicProvider()]
 );
 

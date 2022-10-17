@@ -55,14 +55,21 @@ export default function Home() {
           },
         }
       );
-      return (await rawResponse).data;
+      let ipfsUrl = (await rawResponse).data[0].path;
+      if (ipfsUrl.startsWith("https://ipfs.moralis.io:2053/ipfs/")) {
+        return ipfsUrl
+          .split("https://ipfs.moralis.io:2053/ipfs/")
+          .join("ipfs://");
+      } else {
+        return responseObject;
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    if (chain?.id === 80001) {
+    if (chain?.id === 137) {
       setIsRightChain(true);
     } else {
       setIsRightChain(false);
@@ -82,7 +89,7 @@ export default function Home() {
     setIsUploading(true);
     setProcessStatus("Processing Image...");
 
-    let imageIPFSUrl = (await ipfsUpload(requiredUpload))[0].path;
+    let imageIPFSUrl = await ipfsUpload(requiredUpload);
 
     setProcessStatus("Preparing Metadata...");
 
@@ -98,12 +105,12 @@ export default function Home() {
     };
 
     setProcessStatus("Processing Metadata...");
-    let metadataURL = (await ipfsUpload([metadataUploadObject]))[0].path;
-    console.log(metadataURL);
+    let metadataURL = await ipfsUpload([metadataUploadObject]);
+    // console.log(metadataURL);
 
     try {
       const { ethereum } = window;
-      console.log(signer);
+      // console.log(signer);
       setProcessStatus("Minting...");
       Toast.fire({
         icon: "info",
@@ -126,11 +133,11 @@ export default function Home() {
 
         await mintTokenTxn.wait();
         console.log("mined ", mintTokenTxn.hash);
-        console.log("Token Minted!");
+        // console.log("Token Minted!");
 
         Swal.fire({
           title: "Transaction Mined!",
-          html: `<a href="${NEXT_PUBLIC_EXPLORER_URL}/tx/${mintTokenTxn.hash}" target="_blank">${NEXT_PUBLIC_EXPLORER_URL}/tx/${mintTokenTxn.hash}</a>`,
+          html: `<a href="${process.env.NEXT_PUBLIC_EXPLORER_URL}/tx/${mintTokenTxn.hash}" target="_blank">${process.env.NEXT_PUBLIC_EXPLORER_URL}/tx/${mintTokenTxn.hash}</a>`,
           imageUrl: imageIPFSUrl,
           imageWidth: 200,
           imageAlt: "NFT Image",
