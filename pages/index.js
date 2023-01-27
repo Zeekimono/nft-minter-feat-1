@@ -21,12 +21,14 @@ export default function Home() {
   const [isUploading, setIsUploading] = useState(false);
   const [fireShot, setFireShot] = useState(false);
   const [processStatus, setProcessStatus] = useState("");
+  const [recipient, setRecipient] = useState("");
+  const [isConnected, setIsConnected] = useState(false);
 
   const [isRightChain, setIsRightChain] = useState(true);
 
   const { data: signer } = useSigner();
   const { chain } = useNetwork();
-  const { isConnected } = useAccount();
+  const { isConnected: wagmiConnection, address } = useAccount();
 
   const Toast = Swal.mixin({
     toast: true,
@@ -40,7 +42,19 @@ export default function Home() {
     },
   });
 
-  useEffect(() => console.log(isConnected), [isConnected]);
+  useEffect(() => {
+    if (isConnected) {
+      setRecipient(address);
+    } else {
+      setRecipient("");
+    }
+  }, [isConnected]);
+
+  useEffect(() => {
+    if (wagmiConnection) {
+      setIsConnected(true);
+    }
+  }, [wagmiConnection]);
 
   const ipfsUpload = async (data) => {
     try {
@@ -127,9 +141,13 @@ export default function Home() {
         );
 
         console.log("Minting Token..");
-        const mintTokenTxn = await mintAToken.mintToken(metadataURL, {
-          gasLimit: 400000,
-        });
+        const mintTokenTxn = await mintAToken.mintToken(
+          metadataURL,
+          recipient ? recipient : address,
+          {
+            gasLimit: 400000,
+          }
+        );
 
         await mintTokenTxn.wait();
         console.log("mined ", mintTokenTxn.hash);
@@ -151,6 +169,7 @@ export default function Home() {
       }
     } catch (error) {
       console.log(error);
+      setProcessStatus("Create an NFT Moment");
       setIsUploading(false);
     }
   };
@@ -174,10 +193,18 @@ export default function Home() {
             <Form
               isUploading={isUploading}
               setTitle={setTitle}
+              title={title}
+              description={description}
+              recipient={recipient}
+              setRecipient={setRecipient}
               setDescription={setDescription}
               formSubmitHandler={formSubmitHandler}
+              disableForm={!isConnected}
               disabledSubmission={
-                !isRightChain || isUploading || isUploading || !isConnected
+                !isRightChain ||
+                isUploading ||
+                !requiredUpload ||
+                (recipient && !ethers.utils.isAddress(recipient))
               }
               processStatus={processStatus}
             />

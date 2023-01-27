@@ -1,8 +1,12 @@
 import styles from "./Form.module.scss";
 
 export default function Form({
-  isUploading,
+  disableForm,
   setTitle,
+  title,
+  description,
+  recipient,
+  setRecipient,
   setDescription,
   formSubmitHandler,
   disabledSubmission,
@@ -21,12 +25,23 @@ export default function Form({
         <input
           placeholder={"Title"}
           type="text"
+          value={title}
+          disabled={disableForm}
           onChange={(e) => setTitle(e.target.value)}
         />
         <textarea
           placeholder={"Description"}
+          disabled={disableForm}
+          value={description}
           onChange={(e) => setDescription(e.target.value)}
         ></textarea>
+        <input
+          placeholder={"Recipient-Address"}
+          type="text"
+          disabled={disableForm}
+          value={recipient}
+          onChange={(e) => setRecipient(e.target.value)}
+        />
       </div>
       <button disabled={disabledSubmission} type="submit">
         {processStatus ? processStatus : "Create an NFT Moment"}

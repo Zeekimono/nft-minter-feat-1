@@ -70,7 +70,10 @@ export default function FileUploader({
         <div className={styles.ImagePreview}>
           <div
             className={styles.ImagePreviewClose}
-            onClick={() => setImageUrl("")}
+            onClick={() => {
+              setImageUrl("");
+              setRequiredUpload("");
+            }}
           >
             <span className={styles.ImagePreviewClose_bars}></span>
             <span className={styles.ImagePreviewClose_bars}></span>

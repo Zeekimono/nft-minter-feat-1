@@ -5,6 +5,11 @@
         "internalType": "string",
         "name": "tokenURI",
         "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
       }
     ],
     "name": "mintToken",
